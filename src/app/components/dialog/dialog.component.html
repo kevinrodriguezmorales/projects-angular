@@ -1,0 +1,11 @@
+<ng-container *ngIf="toggleDialog">
+    <div class="dialog" [ngClass]="{ 'show-dialog': toggleDialog }">
+        <div class="dialog-body">
+            <ng-content select="[body]"></ng-content>
+        </div>
+        <div class="dialog-footer">
+            <ng-content select="[footer]"></ng-content>
+        </div>
+    </div>
+    <div class="dialog-overlay" (click)="closeDialog()"></div>
+</ng-container>

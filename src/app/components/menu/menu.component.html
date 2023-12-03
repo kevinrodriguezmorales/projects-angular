@@ -1,0 +1,6 @@
+<ng-container *ngIf="toggleMenu">
+    <div class="menu" #menu [ngClass]="{ 'show-menu': toggleMenu }" [ngStyle]="{'top.px': position[1], 'left.px': position[0]}">
+        <ng-content></ng-content>
+    </div>
+    <div class="overlay-menu" (click)="closeMenu()"></div>
+</ng-container>

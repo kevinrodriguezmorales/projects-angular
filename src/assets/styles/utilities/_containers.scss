@@ -1,0 +1,14 @@
+.main-wrapper {
+    height: 100vh;
+    overflow: auto;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.content-wrapper {
+    max-width: 1366px;
+    margin: 0 auto;
+    padding: 0 16px;
+}

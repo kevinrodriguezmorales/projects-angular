@@ -1,0 +1,5 @@
+<ng-container *ngIf="message != ''">
+    <div class="snackbar" [ngClass]="{ 'show-snackbar' : message != '' }">
+        <span>{{message}}</span>
+    </div>
+</ng-container>

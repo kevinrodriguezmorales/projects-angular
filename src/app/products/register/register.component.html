@@ -1,0 +1,92 @@
+<div class="content-wrapper">
+    <form class="form margin-top-x5" [formGroup]="form">
+        <div class="form__header flex flex-center">
+            <button type="button" class="button-icon" (click)="goBack()">
+                <span class="material-symbols-outlined">keyboard_arrow_left</span>
+            </button>
+            <h3>Formulario de Registro</h3>
+        </div>
+        <div class="form__body">
+            <div class="formfields-group"
+                [ngClass]="{ 'has-error' : form.get('id')?.hasError('required') || form.get('id')?.hasError('minlength') || form.get('id')?.hasError('maxlength') || form.get('id')?.hasError('exists') }">
+                <label for="productID">ID</label>
+                <input type="text" name="productID" formControlName="id" autocomplete="off">
+                <!-- <ng-container *ngIf="form.get('id')?.touched && form.get('id')?.invalid"> -->
+                <ng-container *ngIf="form.get('id')?.hasError('required') else lengthValidationID">
+                    <span class="has-error__message">El ID es inválido!</span>
+                </ng-container>
+                <ng-template #lengthValidationID>
+                    <ng-container
+                        *ngIf="form.get('id')?.hasError('minlength') || form.get('id')?.hasError('maxlength') else existsID">
+                        <span class="has-error__message">El ID debe tener entre 3 y 10 caracteres</span>
+                    </ng-container>
+                    <ng-template #existsID>
+                        <ng-container *ngIf="form.get('id')?.status === 'PENDING'">
+                            <span class="has-pending__message">Validando id ...</span>
+                        </ng-container>
+                        <ng-container *ngIf="form.get('id')?.hasError('exists')">
+                            <span class="has-error__message">El ID ya existe, intente con otro</span>
+                        </ng-container>
+                    </ng-template>
+                </ng-template>
+                <!-- </ng-container> -->
+            </div>
+            <div class="formfields-group"
+                [ngClass]="{ 'has-error' : form.get('name')?.hasError('required') || form.get('name')?.hasError('minlength') || form.get('name')?.hasError('maxlength') }">
+                <label for="productName">Nombre</label>
+                <input type="text" name="productName" formControlName="name" autocomplete="off">
+                <ng-container *ngIf="form.get('name')?.hasError('required') else lengthValidationName">
+                    <span class="has-error__message">Este campo es requerido!</span>
+                </ng-container>
+                <ng-template #lengthValidationName>
+                    <ng-container
+                        *ngIf="form.get('name')?.hasError('minlength') || form.get('name')?.hasError('maxlength')">
+                        <span class="has-error__message">El nombre debe tener entre 5 y 100 caracteres</span>
+                    </ng-container>
+                </ng-template>
+            </div>
+            <div class="formfields-group"
+                [ngClass]="{ 'has-error' : form.get('description')?.hasError('required') || form.get('description')?.hasError('minlength') || form.get('description')?.hasError('maxlength') }">
+                <label for="productDescription">Descripción</label>
+                <input type="text" name="productDescription" formControlName="description" autocomplete="off">
+                <ng-container *ngIf="form.get('description')?.hasError('required') else lengthValidationDescription">
+                    <span class="has-error__message">Este campo es requerido!</span>
+                </ng-container>
+                <ng-template #lengthValidationDescription>
+                    <ng-container
+                        *ngIf="form.get('description')?.hasError('minlength') || form.get('description')?.hasError('maxlength')">
+                        <span class="has-error__message">La descripción debe tener entre 10 y 200 caracteres</span>
+                    </ng-container>
+                </ng-template>
+            </div>
+            <div class="formfields-group" [ngClass]="{ 'has-error' : form.get('logo')?.hasError('required') }">
+                <label for="logo">Logo</label>
+                <input type="text" name="logo" formControlName="logo" autocomplete="off">
+                <ng-container *ngIf="form.get('logo')?.hasError('required')">
+                    <span class="has-error__message">Este campo es requerido!</span>
+                </ng-container>
+            </div>
+            <div class="formfields-group">
+                <label for="dateRelease">Fecha Liberación</label>
+                <input type="date" name="dateRelease" formControlName="date_release" [min]="deadline">
+            </div>
+            <div class="formfields-group disabled-group">
+                <label for="dateRevision">Fecha Revisión</label>
+                <input type="date" name="dateRevision" formControlName="date_revision">
+            </div>
+        </div>
+        <div class="form__footer flex justify-content-center padding-vertical-x5">
+            <button type="button" class="button" (click)="resetForm()" [disabled]="form.pristine">Reiniciar</button>
+            <button type="submit" class="button button-primary margin-left-x5" (click)="createProduct()"
+                [disabled]="!form.valid || form.status === 'PENDING' || creationConfirmation.state">
+                <ng-container *ngIf="USER_FLOW == 'Register' else userEdit">
+                    <span>Registrar</span>
+                </ng-container>
+                <ng-template #userEdit>
+                    <span>Editar</span>
+                </ng-template>
+            </button>
+        </div>
+    </form>
+</div>
+<app-snackbar></app-snackbar>

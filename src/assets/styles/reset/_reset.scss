@@ -1,0 +1,19 @@
+* {
+    &,
+    &::before,
+    &::after {
+        box-sizing: border-box;
+    }
+}
+
+body {
+    font-size: 14px;
+    font-family: var(--main-font);
+    font-weight: 300;
+    margin: 0;
+    background-color: #F4F6F9;
+}
+
+table {
+    border-collapse: collapse;
+}

@@ -1,0 +1,32 @@
+.cover {
+    --size-cover: 40px;
+    width: var(--size-cover);
+    height: var(--size-cover);
+    font-size: 14px;
+    background-color: #C0C7D9;
+    border: 1px solid #C0C7D9;
+    border-radius: 2rem;
+    overflow: hidden;
+    color: #FFFFFF;
+    font-weight: 400;
+
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    position: relative;
+
+    & img {
+        height: 100%;
+        object-fit: contain;
+        position: relative;
+        z-index: 2;
+    }
+
+    &-initials {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+}

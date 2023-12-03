@@ -1,0 +1,5 @@
+<ng-container *ngIf="displayImage">
+    <div class="image">
+        <img [src]="src" [alt]="alt" (error)="errorInImage()">
+    </div>
+</ng-container>

@@ -1,0 +1,81 @@
+$base-spacing: 8px;
+$increments: 8;
+
+@function calculate-spacing($level) {
+    @return $base-spacing * $level;
+}
+
+@mixin generate-spacing-classes($property, $direction, $level: 0) {
+    $spacing-value: calculate-spacing($level);
+
+    @if $direction == vertical {
+        @if $level == 0 {
+            $spacing-value: calculate-spacing(1);
+            .#{$property}-#{$direction} {
+                #{$property}-top: $spacing-value;
+                #{$property}-bottom: $spacing-value;
+            }
+        } @else {
+            $spacing-value: calculate-spacing($level);
+            .#{$property}-#{$direction}-x#{$level} {
+                #{$property}-top: $spacing-value;
+                #{$property}-bottom: $spacing-value;
+            }
+        }
+    } @else if $direction == horizontal {
+        @if $level == 0 {
+            $spacing-value: calculate-spacing(1);
+
+            .#{$property}-#{$direction} {
+                #{$property}-right: $spacing-value;
+                #{$property}-left: $spacing-value;
+            }
+        } @else {
+            $spacing-value: calculate-spacing($level);
+            .#{$property}-#{$direction}-x#{$level} {
+                #{$property}-right: $spacing-value;
+                #{$property}-left: $spacing-value;
+            }
+        }
+    } @else {
+        @if $level == 0 {
+            $spacing-value: calculate-spacing(1);
+
+            .#{$property}-#{$direction} {
+                #{$property}-#{$direction}: $spacing-value;
+            }
+        } @else {
+            $spacing-value: calculate-spacing($level);
+            .#{$property}-#{$direction}-x#{$level} {
+                #{$property}-#{$direction}: $spacing-value;
+            }
+        }
+    }
+}
+
+@include generate-spacing-classes(padding, vertical);
+@include generate-spacing-classes(padding, horizontal);
+@include generate-spacing-classes(margin, vertical);
+@include generate-spacing-classes(margin, horizontal);
+
+@for $i from 1 through $increments {
+    @include generate-spacing-classes(padding, vertical, $i);
+    @include generate-spacing-classes(padding, horizontal, $i);
+
+    @include generate-spacing-classes(padding, top, $i);
+    @include generate-spacing-classes(padding, right, $i);
+    @include generate-spacing-classes(padding, bottom, $i);
+    @include generate-spacing-classes(padding, left, $i);
+
+    @include generate-spacing-classes(margin, vertical, $i);
+    @include generate-spacing-classes(margin, horizontal, $i);
+
+    @include generate-spacing-classes(margin, top, $i);
+    @include generate-spacing-classes(margin, right, $i);
+    @include generate-spacing-classes(margin, bottom, $i);
+    @include generate-spacing-classes(margin, left, $i);
+}
+
+.gap-horizontal {
+    column-gap: 8px;
+}

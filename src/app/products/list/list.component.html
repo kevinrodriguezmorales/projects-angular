@@ -1,0 +1,114 @@
+<div class="content-wrapper">
+    <div class="search padding-vertical-x2 flex justify-content-between">
+        <ng-container *ngIf="!isLoading else loadingHeader">
+            <input type="search" placeholder="Search..." name="searchTerm" [(ngModel)]="searchTerm"
+                (ngModelChange)="search()">
+            <button type="button" class="button button-primary" routerLink="/registrar">Agregar</button>
+        </ng-container>
+
+        <ng-template #loadingHeader>
+            <div class="skeleton-input skeleton"></div>
+            <div class="skeleton-button skeleton"></div>
+        </ng-template>
+    </div>
+
+    <div class="list padding-vertical-x3 padding-horizontal-x3">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="data-justify-center">Logo</th>
+                        <th>Nombre del producto</th>
+                        <th>
+                            <div class="flex align-items-center gap-horizontal">Descripción <span
+                                    class="material-symbols-outlined">info</span></div>
+                        </th>
+                        <th>
+                            <div class="flex align-items-center gap-horizontal">Fecha de liberación <span
+                                    class="material-symbols-outlined">info</span></div>
+                        </th>
+                        <th>
+                            <div class="flex align-items-center gap-horizontal">Fecha de reestructuración <span
+                                    class="material-symbols-outlined">info</span></div>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="!isLoading else loadingData">
+                        <ng-container *ngIf="filteredData.length == 0 else data">
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <span>No se encontraron registros</span>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #data>
+                            <ng-container *ngFor="let product of filteredData; trackBy: trackById">
+                                <tr>
+                                    <td class="data-justify-center">
+                                        <div class="cover">
+                                            <app-image [src]="product.logo" [alt]="product.name"></app-image>
+                                            <span class="cover-initials">{{ product.name | capitalLetters }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{product.name}}</td>
+                                    <td>{{product.description}}</td>
+                                    <td>{{ product.date_release | formatDate | date: 'dd/MM/yyyy' }}</td>
+                                    <td>{{ product.date_revision | formatDate | date: 'dd/MM/yyyy' }}</td>
+                                    <td class="data-justify-center">
+                                        <button type="button" class="button-icon" (click)="toggleMenu(product, $event)">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                        <app-menu [toggleMenu]="showMenuComponent && selectedProduct === product"
+                                            [position]="buttonPosition" (onDestroyMenu)="closeMenuRef()">
+                                            <button type="button" [routerLink]="['/editar', product.id]"
+                                                (click)="editProduct(product)">
+                                                <span class="material-symbols-outlined">edit</span>Editar
+                                            </button>
+                                            <button type="button" (click)="showDeleteDialog(product)"><span
+                                                    class="material-symbols-outlined">delete</span>Eliminar</button>
+                                        </app-menu>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-template>
+                    </ng-container>
+                    <ng-template #loadingData>
+                        <ng-container *ngFor="let row of [1, 2, 3, 4, 5]">
+                            <tr>
+                                <div class="skeleton"></div>
+                            </tr>
+                        </ng-container>
+                    </ng-template>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination padding-vertical-x2 flex justify-content-between align-items-center">
+            <ng-container *ngIf="!isLoading else loading">
+                <span class="pagination__total">{{filteredData.length}} resultados</span>
+                <select name="pagination" [(ngModel)]="itemsPerPage" (change)="loadProducts(); resetSearchTerm()">
+                    <ng-container *ngFor="let value of quantitiesRecords">
+                        <option [value]="value">{{ value }}</option>
+                    </ng-container>
+                </select>
+            </ng-container>
+            <ng-template #loading>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton-input skeleton-input--min skeleton"></div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<app-dialog [toggleDialog]="showDialogComponent && selectedProduct != null" (onDestroyDialog)="closeDialogRef()">
+    <ng-container body>
+        <span>¿Estas seguro de eliminar el producto {{selectedProduct?.name}} - {{selectedProduct?.id}}?</span>
+    </ng-container>
+    <ng-container footer>
+        <button class="button" (click)="closeDialogRef()">Cancelar</button>
+        <button class="button button-primary" (click)="deleteProduct(selectedProduct?.id)">Confirmar</button>
+    </ng-container>
+</app-dialog>
+
+<app-snackbar></app-snackbar>

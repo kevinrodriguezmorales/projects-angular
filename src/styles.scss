@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./assets/styles/utilities/root";
+
+@import "./assets/styles/reset/reset";
+@import "./assets/styles/reset/svg";
+@import "./assets/styles/reset/images";
+
+@import "./assets/styles/utilities/containers";
+
+@import "./assets/styles/utilities/flex";
+@import "./assets/styles/utilities/spacing";
+
+@import "./assets/styles/utilities/elements";
+@import "./assets/styles/utilities/tables";
+@import "./assets/styles/utilities/forms";
+@import "./assets/styles/utilities/buttons";
+
+@import "./assets/styles/utilities/typography";
+
+@import "./assets/styles/utilities/skeleton";
+
+body {
+    overflow: hidden;
+}
