@@ -31,7 +31,9 @@ export class FinancialProduct implements Product {
     }
 
     static initializerFromAPI(data: any): FinancialProduct {
-        const { id, name, description, logo, date_release, date_revision } = data;
+        let { id, name, description, logo, date_release, date_revision } = data;
+        date_release = new Date(date_release).toISOString().substring(0, 10);
+        date_revision = new Date(date_revision).toISOString().substring(0, 10);
         return new FinancialProduct(id, name, description, logo, date_release, date_revision)
     }
 }

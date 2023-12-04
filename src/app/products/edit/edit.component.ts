@@ -63,11 +63,6 @@ export class EditComponent {
         console.log(this.product)
     }
 
-    public setDatesFromAPI(): void {
-        this.product.date_release = new Date(this.product.date_release).toISOString().substring(0, 10);
-        this.product.date_revision = new Date(this.product.date_release).toISOString().substring(0, 10);
-    }
-
     public createProduct(): void {
         const values = this.form.value;
         this.product.name = values.name;
@@ -98,8 +93,7 @@ export class EditComponent {
     public loadProduct(): void {
         this.suscriptions.add(
             this._productService.product$.subscribe((product: Product) => {
-                this.product = FinancialProduct.initializerFromAPI(product)
-                this.setDatesFromAPI();
+                this.product = FinancialProduct.initializerFromAPI(product);
                 this.form.patchValue({
                     date_release: this.product.date_release,
                     date_revision: this.product.date_revision,
