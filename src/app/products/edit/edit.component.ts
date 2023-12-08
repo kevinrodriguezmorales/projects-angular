@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Product } from 'src/app/shared';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, Subscription, distinctUntilChanged, startWith, takeUntil } from 'rxjs';
 import { SnackbarService } from 'src/app/components/services/snackbar/snackbar.service';
 import { HelperService } from 'src/app/core/services/helper/helper.service';
@@ -24,9 +24,9 @@ export class EditComponent {
     public unsubscribe = new Subject();
     public suscriptions: Subscription = new Subscription();
 
-    public creationConfirmation = {
+    public response: { state: boolean, message: Product | Partial<Product> | string } = {
         state: false,
-        message: ''
+        message: ""
     }
     
     public product = new FinancialProduct("","","", "")
@@ -43,7 +43,7 @@ export class EditComponent {
             id: [{ value: this.product.id, disabled: true }, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
             name: [this.product.name, [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
             description: [this.product.description, [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
-            logo: [this.product.logo, Validators.required],
+            logo: [this.product.logo, [Validators.required, this.checkURLImage]],
             date_release: [this.product.date_release, Validators.required],
             date_revision: [{ value: this.product.date_revision, disabled: true }, Validators.required],
         })
@@ -70,14 +70,15 @@ export class EditComponent {
         this.product.logo = values.logo;
 
         this.suscriptions.add(
-            this._productService.editProduct(this.product).subscribe(res => {
-                this.creationConfirmation = {
+            this._productService.updateProduct(this.product).subscribe((response: Product | Partial<Product> | string ) => {
+                this.response = {
                     state: false,
-                    message: res
+                    message: response
                 }
-                this._snackbar.showSnackbar(3000, 'Producto editado exitosamente')
+                this._snackbar.showSnackbar(3000, 'Producto editado exitosamente');
+                this.goBack()
             }, (error: HttpErrorResponse) => {
-                this.creationConfirmation = {
+                this.response = {
                     state: false,
                     message: error.error
                 }
@@ -93,6 +94,11 @@ export class EditComponent {
     public loadProduct(): void {
         this.suscriptions.add(
             this._productService.product$.subscribe((product: Product) => {
+                if (Object.keys(product).length === 0) {
+                    this.goBack();
+                    return
+                }
+
                 this.product = FinancialProduct.initializerFromAPI(product);
                 this.form.patchValue({
                     date_release: this.product.date_release,
@@ -104,6 +110,13 @@ export class EditComponent {
                 })
             })
         )
+    }
+
+    public checkURLImage(control: AbstractControl) {
+        if (control.value.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp|svg)(\?(.*))?$/gmi)) {
+            return null
+        }
+        return { wrongURL: true }
     }
 
     public ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { ScrollService } from './core/services/scroll-service/scroll.service';
 
 @Component({

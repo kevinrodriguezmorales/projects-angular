@@ -10,7 +10,7 @@
             <div class="formfields-group"
                 [ngClass]="{ 'has-error' : form.get('id')?.hasError('required') || form.get('id')?.hasError('minlength') || form.get('id')?.hasError('maxlength') || form.get('id')?.hasError('exists') }">
                 <label for="productID">ID</label>
-                <input type="text" name="productID" formControlName="id" autocomplete="off">
+                <input type="text" name="productID" formControlName="id" autocomplete="off" placeholder="ID">
                 <!-- <ng-container *ngIf="form.get('id')?.touched && form.get('id')?.invalid"> -->
                 <ng-container *ngIf="form.get('id')?.hasError('required') else lengthValidationID">
                     <span class="has-error__message">El ID es inválido!</span>
@@ -34,7 +34,7 @@
             <div class="formfields-group"
                 [ngClass]="{ 'has-error' : form.get('name')?.hasError('required') || form.get('name')?.hasError('minlength') || form.get('name')?.hasError('maxlength') }">
                 <label for="productName">Nombre</label>
-                <input type="text" name="productName" formControlName="name" autocomplete="off">
+                <input type="text" name="productName" formControlName="name" autocomplete="off" placeholder="Nombre">
                 <ng-container *ngIf="form.get('name')?.hasError('required') else lengthValidationName">
                     <span class="has-error__message">Este campo es requerido!</span>
                 </ng-container>
@@ -48,7 +48,7 @@
             <div class="formfields-group"
                 [ngClass]="{ 'has-error' : form.get('description')?.hasError('required') || form.get('description')?.hasError('minlength') || form.get('description')?.hasError('maxlength') }">
                 <label for="productDescription">Descripción</label>
-                <input type="text" name="productDescription" formControlName="description" autocomplete="off">
+                <input type="text" name="productDescription" formControlName="description" autocomplete="off" placeholder="Descripción">
                 <ng-container *ngIf="form.get('description')?.hasError('required') else lengthValidationDescription">
                     <span class="has-error__message">Este campo es requerido!</span>
                 </ng-container>
@@ -59,12 +59,17 @@
                     </ng-container>
                 </ng-template>
             </div>
-            <div class="formfields-group" [ngClass]="{ 'has-error' : form.get('logo')?.hasError('required') }">
+            <div class="formfields-group" [ngClass]="{ 'has-error' : form.get('logo')?.hasError('required') || form.get('logo')?.hasError('wrongURL') }">
                 <label for="logo">Logo</label>
-                <input type="text" name="logo" formControlName="logo" autocomplete="off">
-                <ng-container *ngIf="form.get('logo')?.hasError('required')">
+                <input type="text" name="logo" formControlName="logo" autocomplete="off" placeholder="https://example.com/img.jpg">
+                <ng-container *ngIf="form.get('logo')?.hasError('required') else checkUrl">
                     <span class="has-error__message">Este campo es requerido!</span>
                 </ng-container>
+                <ng-template #checkUrl>
+                    <ng-container *ngIf="form.get('logo')?.hasError('wrongURL')">
+                        <span class="has-error__message">El formato URL de la imagen no es correcto</span>
+                    </ng-container>
+                </ng-template>
             </div>
             <div class="formfields-group">
                 <label for="dateRelease">Fecha Liberación</label>
@@ -78,7 +83,7 @@
         <div class="form__footer flex justify-content-center padding-vertical-x5">
             <button type="button" class="button" (click)="resetForm()" [disabled]="form.pristine">Reiniciar</button>
             <button type="submit" class="button button-primary margin-left-x5" (click)="createProduct()"
-                [disabled]="!form.valid || form.status === 'PENDING' || creationConfirmation.state">
+            [disabled]="!form.valid || form.status === 'PENDING' || response.state">
                 <ng-container *ngIf="USER_FLOW == 'Register' else userEdit">
                     <span>Registrar</span>
                 </ng-container>

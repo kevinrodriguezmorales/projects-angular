@@ -41,7 +41,7 @@ fdescribe('Test for FinantialProduct', () => {
             expect(FinancialProduct.initializerFromAPI(productFromAPI)).toBeTruthy();
         })
 
-        describe('Test for data from API', () => {
+        describe('Test for dates data from API', () => {
             it('should be formatted date_release(YYYY-MM-DD)', () => {
                 expect(FinancialProduct.initializerFromAPI(productFromAPI).date_release).toEqual("2023-02-01")
             })

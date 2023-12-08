@@ -62,6 +62,7 @@ export class ListComponent {
     public loadProducts(): void {
         this.isLoading = true;
         this._productService.getProducts().subscribe((data: Array<Product>) => {
+            console.log(data)
             this.isLoading = false;
             this.products = data;
 

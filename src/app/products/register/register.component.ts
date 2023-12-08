@@ -23,9 +23,9 @@ export class RegisterComponent {
     public unsubscribe = new Subject();
     public suscriptions: Subscription = new Subscription();
 
-    public creationConfirmation = {
+    public response: { state: boolean, message: Product | Partial<Product> | string } = {
         state: false,
-        message: ''
+        message: ""
     }
 
     public product = new FinancialProduct("","","", "");
@@ -41,7 +41,7 @@ export class RegisterComponent {
             id: [this.product.id, [Validators.required, Validators.minLength(3), Validators.maxLength(10)], this.verifyID.bind(this)],
             name: [this.product.name, [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
             description: [this.product.description, [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
-            logo: [this.product.logo, Validators.required],
+            logo: [this.product.logo, [Validators.required, this.checkURLImage]],
             date_release: [this.product.date_release, Validators.required],
             date_revision: [{ value: this.product.date_revision, disabled: true }, Validators.required],
         })
@@ -61,20 +61,23 @@ export class RegisterComponent {
         this.product.logo = values.logo;
 
         this.suscriptions.add(
-            this._productService.createProduct(this.product).subscribe(res => {
-                this.creationConfirmation = {
+            this._productService.createProduct(this.product).subscribe((response: Product | Partial<Product> | string ) => {
+                this.response = {
                     state: true,
-                    message: res
+                    message: response
                 }
-                this._snackbar.showSnackbar(3000, 'Producto creado exitosamente')
+                this._snackbar.showSnackbar(3000, 'Producto creado exitosamente');
+                this.goBack()
             }, (error: HttpErrorResponse) => {
-                this.creationConfirmation = {
+                this.response = {
                     state: false,
                     message: error.error
                 }
 
-                if (this.creationConfirmation.message.includes("Can't create because product is duplicate")) {
-                    this._snackbar.showSnackbar(5000, "El producto ya ha sido creado");
+                if (typeof this.response.message === "string") {
+                    if (this.response.message.includes("Can't create because product is duplicate")) {
+                        this._snackbar.showSnackbar(5000, "El producto ya ha sido creado");
+                    }
                 } else {
                     this._snackbar.showSnackbar(5000, "Se presentó un problema al crear, inténtalo nuevamente");
                 }
@@ -100,10 +103,17 @@ export class RegisterComponent {
         }
         this.form.reset(defaultValues);
         this.setDates();
-        this.creationConfirmation = {
+        this.response = {
             state: false,
             message: ''
         }
+    }
+
+    public checkURLImage(control: AbstractControl) {
+        if (control.value.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp|svg)(\?(.*))?$/gmi)) {
+            return null
+        }
+        return { wrongURL: true }
     }
 
     public ngOnInit(): void {
