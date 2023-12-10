@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, timer } from 'rxjs';
+import { Observable, Subject, timer } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +17,7 @@ export class SnackbarService {
         })
     }
 
-    public getSnackbar(): Subject<string> {
+    public getSnackbar(): Observable<string> {
         return this.snackbarSubject;
     }
 

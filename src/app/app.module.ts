@@ -8,12 +8,13 @@ import { MenuComponent } from './components/menu/menu.component';
 import { ListComponent } from './products/list/list.component';
 import { RegisterComponent } from './products/register/register.component';
 import { DialogComponent } from './components/dialog/dialog.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { EditComponent } from './products/edit/edit.component';
 import { FormatDatePipe } from './core/pipes/format-date/format-date.pipe';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { ImageComponent } from './components/image/image.component';
 import { CapitalLettersPipe } from './core/pipes/capital-letters/capital-letters.pipe';
+import { HeaderInterceptor } from './core/interceptors/header/header.interceptor';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,13 @@ import { CapitalLettersPipe } from './core/pipes/capital-letters/capital-letters
         ReactiveFormsModule,
         HttpClientModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeaderInterceptor,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -11,9 +11,13 @@ export class SnackbarComponent {
 
     constructor(private _snackbarService: SnackbarService) {}
 
-    public ngOnInit(): void {
+    public getMessage(): void {
         this._snackbarService.getSnackbar().subscribe((message: string) => {
             this.message = message
         })
+    }
+
+    public ngOnInit(): void {
+        this.getMessage();
     }
 }
